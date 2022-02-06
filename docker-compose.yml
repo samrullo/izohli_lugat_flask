@@ -1,0 +1,16 @@
+version: "3.4"
+
+services:
+    flask:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        volumes:
+            - ./:/app
+        ports:
+            - "3000:80"
+        networks:
+            - flask-networks
+networks:
+    flask-networks:
+        driver: bridge
