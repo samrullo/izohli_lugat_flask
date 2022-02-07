@@ -153,3 +153,4 @@ cython_debug/
 
 venvpy/
 .flaskenv
+nonproject_files/

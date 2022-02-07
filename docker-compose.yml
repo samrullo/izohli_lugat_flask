@@ -9,8 +9,25 @@ services:
             - ./:/app
         ports:
             - "3000:80"
+        depends_on:
+            - "postgres"
+        environment:
+            CFLAGS: -Qunused-arguments
+            CPPFLAGS: -Qunused-arguments
+            FLASK_ENV: production
+            PROD_DATABASE_URI: postgresql://root:password@postgres:5432/flaskdb
         networks:
             - flask-networks
+    postgres:
+        container_name: 'postgres'
+        image: postgres
+        environment:
+            POSTGRES_USER: root
+            POSTGRES_PASSWORD: password
+            POSTGRES_DB: flaskdb
+        networks:
+            - flask-networks
+
 networks:
     flask-networks:
         driver: bridge
