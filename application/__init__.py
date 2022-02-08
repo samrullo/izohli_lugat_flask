@@ -16,8 +16,11 @@ def create_app(config_name):
     db.init_app(app)
 
     with app.app_context():
-        from .main import main_bp
+        from application.main import main_bp
         app.register_blueprint(main_bp)
+
+        from application.api.v1 import api_bp
+        app.register_blueprint(api_bp)
 
         db.create_all()
         return app
