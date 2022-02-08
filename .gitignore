@@ -155,3 +155,4 @@ venvpy/
 .flaskenv
 nonproject_files/
 data/
+db_data/
