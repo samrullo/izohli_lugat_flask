@@ -1,7 +1,8 @@
-version: "3.4"
+version: "3.7"
 
 services:
     flask:
+        container_name: 'flask'
         build:
             context: .
             dockerfile: Dockerfile
@@ -10,7 +11,8 @@ services:
         ports:
             - "3000:80"
         depends_on:
-            - "postgres"
+            postgres:
+                condition: service_healthy
         environment:
             CFLAGS: -Qunused-arguments
             CPPFLAGS: -Qunused-arguments
@@ -24,7 +26,15 @@ services:
         environment:
             POSTGRES_USER: root
             POSTGRES_PASSWORD: password
-            POSTGRES_DB: flaskdb
+            POSTGRES_DB: flaskdb        
+        volumes:
+            - ./data/:/var/dump
+            - ./db_data/:/var/lib/postgresql/data
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U root -d flaskdb"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
         networks:
             - flask-networks
 
