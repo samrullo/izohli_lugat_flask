@@ -1,16 +1,20 @@
 version: "3.7"
 
 services:
-    telegram_bot:
-        container_name: 'telegram_bot'
+    front_next:
+        container_name: "front_next"
         build:
-            context: ./telegram_bot_app
+            context: ./front_next
             dockerfile: Dockerfile
+        ports:
+            - "4000:3000"
+        command: ["npm", "start"]
+        environment:
+            NODE_ENV: "production"
+        depends_on:
+            - "flask"
         networks:
             - flask-networks
-        environment:
-            API_HOST: "flask"
-            API_PORT: "80"
     flask:
         container_name: 'flask'
         build:
