@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block page_content %}
+
+<table class="table table-hover table-responsive orderByDateTable">
+    <thead order_col_no="0">
+    <th>Id</th>
+    <th>Name</th>
+    <th>Price</th>
+    <th>Created At</th>
+    <th>Modified At</th>
+    </thead>
+    <tbody>
+    {% for product in products %}
+    <tr>
+        <td>{{product.id}}</td>
+        <td>{{product.name}}</td>
+        <td>{{product.price}}</td>
+        <td>{{moment(product.created_at).format('LLL')}}</td>
+        <td>{{moment(product.modified_at).format('LLL')}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

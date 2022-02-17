@@ -1,10 +1,14 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField,SubmitField
+from wtforms import StringField,IntegerField,SubmitField
 
-class RegisterForm(FlaskForm):
+class ProductForm(FlaskForm):
     name=StringField("Name")
-    email=StringField("Email")
+    price=IntegerField("Price")
     submit=SubmitField("Submit")
 
     def __str__(self):
-        return f"{self.name.data} {self.email.data}"
+        return f"{self.name.data} {self.price.data}"
+
+class CategoryForm(FlaskForm):
+    name=StringField("Category Name")
+    submit = SubmitField("Submit")

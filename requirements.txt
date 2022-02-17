@@ -2,5 +2,8 @@ Flask
 Bootstrap-Flask
 Flask-WTF
 Flask-SQLAlchemy
+Flask-Moment
+Flask-Login
 Psycopg2==2.8.4
 python-dotenv
+httpie
