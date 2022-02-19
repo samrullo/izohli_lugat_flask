@@ -1,6 +1,20 @@
 version: "3.7"
 
 services:
+    front_next:
+        container_name: "front_next"
+        build:
+            context: ./front_next
+            dockerfile: Dockerfile
+        ports:
+            - "4000:3000"
+        command: ["npm", "start"]
+        environment:
+            NODE_ENV: "production"
+        depends_on:
+            - "flask"
+        networks:
+            - flask-networks
     flask:
         container_name: 'flask'
         build:
