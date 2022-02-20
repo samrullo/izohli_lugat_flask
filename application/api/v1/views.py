@@ -3,9 +3,18 @@ from flask import jsonify, request, current_app
 from application.main.models import Product
 from application import db
 import json
+from .auth import auth
+from .error import forbidden
+from flask import g
 
+@api_bp.before_request
+@auth.login_required
+def before_request():
+    if not g.current_user.is_anonymous and not g.current_user.is_authenticated:
+        return forbidden("Unconfirmed account")
 
 @api_bp.route("/products")
+@auth.login_required
 def products():
     products = Product.query.all()
     products = [product.to_json() for product in products]

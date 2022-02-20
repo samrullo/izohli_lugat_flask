@@ -1,7 +1,9 @@
 from application import db, login_manager
 from flask_login import UserMixin
+from flask import current_app
 from application.main.models import BaseModel
 from werkzeug.security import generate_password_hash, check_password_hash
+from itsdangerous import URLSafeTimedSerializer
 
 
 class BaseUser:
@@ -17,6 +19,20 @@ class BaseUser:
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    @staticmethod
+    def generate_auth_token(id, expiration):
+        s = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
+        return s.dumps({"id": id, 'expiration': expiration})
+
+    @staticmethod
+    def verify_auth_token(token, expiration):
+        s = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
+        try:
+            user_id_dict = s.loads(token, max_age=expiration)
+        except:
+            return None
+        return User.query.get(user_id_dict["id"])
 
 
 class User(UserMixin, BaseModel, BaseUser, db.Model):

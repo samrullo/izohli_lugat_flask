@@ -5,6 +5,7 @@ Flask-SQLAlchemy
 Flask-Moment
 Flask-Login
 Flask-Migrate
+Flask-HTTPAuth
 Psycopg2==2.8.4
 python-dotenv
 httpie
