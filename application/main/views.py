@@ -1,3 +1,5 @@
+import pandas as pd
+
 from . import main_bp
 from flask import render_template, flash, redirect, url_for
 from .forms import ProductForm,CategoryForm
@@ -45,3 +47,12 @@ def new_category():
         flash(f"Added {category}", "success")
         return redirect(url_for("main_bp.categories"))
     return render_template("common_form_render.html", form=form)
+
+import pathlib
+
+@main_bp.route("/rakuten/orders")
+def rakuten_orders():
+    data_folder=pathlib.Path(r"C:\Users\amrul\PycharmProjects\jspanda_eshop_parsing\data")
+    data_file=data_folder/"rakuten_orders_20220608_to_20220916.xlsx"
+    df=pd.read_excel(data_file)
+    return render_template("rakuten_orders.html",df=df)

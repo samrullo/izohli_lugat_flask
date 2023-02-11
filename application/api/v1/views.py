@@ -1,17 +1,28 @@
 from application.api.v1 import api_bp
 from flask import jsonify, request, current_app
 from application.main.models import Product
+from application.auth.models import User
 from application import db
 import json
 from .auth import auth
-from .error import forbidden
+from .error import forbidden, unauthorized
 from flask import g
+
 
 @api_bp.before_request
 @auth.login_required
 def before_request():
     if not g.current_user.is_anonymous and not g.current_user.is_authenticated:
         return forbidden("Unconfirmed account")
+
+
+@api_bp.route("/tokens", methods=["POST"])
+def get_token():
+    if g.current_user.is_anonymous or g.token_used:
+        return unauthorized("Invalid credentials")
+    return jsonify({"token": g.current_user.generate_auth_token(id=g.current_user.id,
+                                                                expiration=current_app.config["TOKEN_EXPIRATION"])})
+
 
 @api_bp.route("/products")
 @auth.login_required
@@ -25,6 +36,7 @@ def products():
 def product(product_id):
     product = Product.query.get(product_id)
     return jsonify({"product": product.to_json()})
+
 
 def log_request_data(request):
     if request.is_json:
@@ -53,17 +65,25 @@ def update_product():
     product = Product.query.get(product_id)
     for key in product_data.keys():
         if key != "id":
-            setattr(product,key,product_data[key])
+            setattr(product, key, product_data[key])
     db.session.add(product)
     db.session.commit()
     return jsonify(product.to_json())
 
-@api_bp.route("/products",methods=["DELETE"])
+
+@api_bp.route("/products", methods=["DELETE"])
 def remove_product():
     log_request_data(request)
-    product_data=request.json
-    product_id=int(product_data["id"])
-    product=Product.query.get(product_id)
+    product_data = request.json
+    product_id = int(product_data["id"])
+    product = Product.query.get(product_id)
     db.session.delete(product)
     db.session.commit()
-    return jsonify({"message":f"Successfully removed {product_data}"})
+    return jsonify({"message": f"Successfully removed {product_data}"})
+
+
+@api_bp.route("/users", methods=["GET"])
+def users():
+    users = User.query.all()
+    users = [user.to_json() for user in users]
+    return jsonify({"users": users})

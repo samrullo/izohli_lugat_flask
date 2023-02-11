@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block page_content %}
+
+<table class="table table-hover table-responsive orderByDateTable">
+    <thead order_col_no="0">
+    <th>Id</th>
+    <th>Image</th>
+    <th>Purchase date</th>
+    <th>Name</th>
+    <th>Price</th>
+    <th>Quantity</th>
+    </thead>
+    <tbody>
+    {% for idx,row in df.iterrows() %}
+    <tr>
+        <td>{{row['order_id']}}</td>
+        <td><img src="{{row['image']}}" alt="image"></td>
+        <td>{{row['purchase_date']}}</td>
+        <td>{{row['name']}}</td>
+        <td>{{row['price']}}</td>
+        <td>{{row['quantity']}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

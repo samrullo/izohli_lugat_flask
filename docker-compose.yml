@@ -18,6 +18,7 @@ services:
             CPPFLAGS: -Qunused-arguments
             FLASK_ENV: production
             PROD_DATABASE_URI: postgresql://root:password@postgres:5432/flaskdb
+            TOKEN_EXPIRATION: 3600
         networks:
             - flask-networks
     postgres:
