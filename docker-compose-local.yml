@@ -1,0 +1,46 @@
+version: "3.7"
+
+services:
+  izohli_lugat:
+    container_name: "izohli_lugat"
+    build:
+      context: .
+      dockerfile: Flask.Dockerfile
+    volumes:
+      - ./:/app
+    ports:
+      - "3000:80"
+    command: ["systemctl","start","izohli_lugat"]    
+    environment:
+      SECRET_KEY: izohli_lugat_SECRET
+      SQLALCHEMY_DATABASE_URI: "postgresql://postgres:postgres@postgres:5432/izohli_lugat"
+      ELASTICSEARCH_DOMAIN: "elastic_search:9200"
+      CFLAGS: -Qunused-arguments
+      CPPFLAGS: -Qunused-arguments
+      FLASK_ENV: development
+      TOKEN_EXPIRATION: 3600
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - izohli_lugat-networks
+  elasticsearch:
+    container_name: "elastic_search"
+    build:
+        context: .
+        dockerfile: ElasticSearch.Dockerfile
+    ports:
+        - "9200:9200"
+        - "9300:9300"
+    environment:
+        discovery.seed_hosts: "elastic_search"
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail http://elastic_search:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - izohli_lugat-networks  
+networks:
+  izohli_lugat-networks:
+    driver: bridge

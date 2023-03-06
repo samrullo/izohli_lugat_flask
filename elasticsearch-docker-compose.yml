@@ -1,0 +1,13 @@
+version: "3.7"
+
+services:
+    elasticsearch:
+        container_name: "elastic_search"
+        build:
+            context: .
+            dockerfile: ElasticSearch.Dockerfile
+        ports:
+            - "9200:9200"
+            - "9300:9300"
+        environment:
+            discovery.seed_hosts: "172.22.112.1"

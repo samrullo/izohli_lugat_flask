@@ -6,8 +6,9 @@ Flask-Moment
 Flask-Login
 Flask-Migrate
 Flask-HTTPAuth
-Psycopg2==2.8.4
+psycopg2-binary
 python-dotenv
 httpie
 pandas
 openpyxl
+elasticsearch

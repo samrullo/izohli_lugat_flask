@@ -1,0 +1,47 @@
+version: "3"
+services:
+  elasticsearch1:
+    image: elasticsearch:7.16.3
+    environment:
+      - cluster.name=my-cluster
+      - node.name=node-1
+      - network.host=0.0.0.0
+      - discovery.seed_hosts=elasticsearch2,elasticsearch3
+      - cluster.initial_master_nodes=elasticsearch1,elasticsearch2,elasticsearch3
+    networks:
+      es_network:
+        ipv4_address: 192.168.1.10
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+
+  elasticsearch2:
+    image: elasticsearch:7.16.3
+    environment:
+      - cluster.name=my-cluster
+      - node.name=node-2
+      - network.host=0.0.0.0
+      - discovery.seed_hosts=elasticsearch1,elasticsearch3
+      - cluster.initial_master_nodes=elasticsearch1,elasticsearch2,elasticsearch3
+    networks:
+      es_network:
+        ipv4_address: 192.168.1.11
+
+  elasticsearch3:
+    image: elasticsearch:7.16.3
+    environment:
+      - cluster.name=my-cluster
+      - node.name=node-3
+      - network.host=0.0.0.0
+      - discovery.seed_hosts=elasticsearch1,elasticsearch2
+      - cluster.initial_master_nodes=elasticsearch1,elasticsearch2,elasticsearch3
+    networks:
+      es_network:
+        ipv4_address: 192.168.1.12
+
+networks:
+  es_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.1.0/24
